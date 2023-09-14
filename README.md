@@ -9,8 +9,7 @@ Build the `nbnet.sunder` bindings as well as the native library (`libnbnet.a`):
 $ make
 ```
 
-Install the `nbnet.sunder` bindings and `libnbnet.a` to
-`$(SUNDER_HOME)/lib/nbnet`:
+Install the `nbnet.sunder` bindings and `libnbnet.a` to `$(SUNDER_HOME)/lib/nbnet`:
 
 ```sh
 $ make install

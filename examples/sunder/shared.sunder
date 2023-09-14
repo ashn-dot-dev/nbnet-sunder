@@ -43,8 +43,14 @@ struct message {
     }
 
     func serialize(self: *message, stream: *NBN_Stream) sint {
-        NBN_SerializeUInt(stream, self.*.length, 0, (:uint)LENGTH);
-        NBN_SerializeBytes(stream, (:*u8)&self.*.data[0], self.*.length);
+        # TODO: Calling custom C functions wrapping the NBN_Serialize* macros
+        # fails to properly serialize a message for some unknown reason.
+        # However, directly calling the stream->serialize_*_func functions will
+        # successfully serialize that message. Investigate why the custom C
+        # functions wrapping the serialization macros behave differently than
+        # directly calling the stream's serialization functions.
+        stream.*.serialize_uint_func(stream, &self.*.length, 0, (:uint)LENGTH);
+        stream.*.serialize_bytes_func(stream, (:*u8)&self.*.data[0], self.*.length);
         return 0;
     }
 }

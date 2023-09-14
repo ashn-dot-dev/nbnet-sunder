@@ -207,31 +207,5 @@ def main():
     for node in ast:
         print(generate_node(node))
 
-    # TODO: Compile and run `compare.sunder` and `compare.c`, then diff their
-    # output to make sure that all types have the same size and alignment.
-    if False:
-        with open("compare.sunder", "w") as f:
-            f.write("import \"std\";\n")
-            f.write("import \"nbnet.sunder\";\n")
-            f.write("func main() void {\n")
-            for node in ast:
-                if node["kind"] == "FunctionDecl":
-                    continue
-                f.write(f"{INDENT}let {node['name']}_size = sizeof({node['name']});\n")
-                f.write(f"{INDENT}let {node['name']}_align = alignof({node['name']});\n")
-                f.write(f"{INDENT}std::print_format_line(std::out(), \"{node['name']} {{}} {{}}\", (:[]std::formatter)[std::formatter::init[[usize]](&{node['name']}_size), std::formatter::init[[usize]](&{node['name']}_align)]);\n")
-            f.write("}")
-
-        with open("compare.c", "w") as f:
-            f.write("#include <stdalign.h>\n")
-            f.write("#include <stdio.h>\n")
-            f.write("#include <nbnet.h>\n")
-            f.write("int main(void) {\n")
-            for node in ast:
-                if node["kind"] == "FunctionDecl":
-                    continue
-                f.write(f"printf(\"{INDENT}{node['name']} %zu %zu\\n\", sizeof({node['name']}), alignof({node['name']}));\n")
-            f.write("}")
-
 if __name__ == "__main__":
     main()
