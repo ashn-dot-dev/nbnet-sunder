@@ -18,8 +18,6 @@ let NBN_CLIENT_MESSAGE_RECEIVED: sint = 4;
 
 extern func usleep(usec: uint) sint;
 extern func NBN_Driver_Init() void;
-extern func NBN_SerializeUInt(stream: *NBN_Stream, value: uint, min: uint, max: uint) void;
-extern func NBN_SerializeBytes(stream: *NBN_Stream, value: *u8, length: uint) void;
 
 let NAME = startof("example");
 let ADDR = startof("127.0.0.1");
