@@ -147,9 +147,9 @@ def generate_enum(node):
         if constant["kind"] != "EnumConstantDecl":
             continue
         if constant.get("inner") is not None and constant["inner"][0].get("value") is not None:
-            lines.append(f"    {constant['name']} = {constant['inner'][0]['value']};")
+            lines.append(f"{INDENT}{constant['name']} = {constant['inner'][0]['value']};")
         else:
-            lines.append(f"    {constant['name']};")
+            lines.append(f"{INDENT}{constant['name']};")
     lines.append("}")
     return "\n".join(lines)
 
