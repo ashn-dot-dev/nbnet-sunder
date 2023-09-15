@@ -14,3 +14,8 @@ Install the `nbnet.sunder` bindings and `libnbnet.a` to `$(SUNDER_HOME)/lib/nbne
 ```sh
 $ make install
 ```
+
+## License
+All content in this repository is licensed under the Zero-Clause BSD license.
+
+See LICENSE for more information.
