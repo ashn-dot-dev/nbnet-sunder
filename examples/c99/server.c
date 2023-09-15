@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -59,12 +60,14 @@ main(void)
                 assert(info.sender == client);
                 assert(info.type == MESSAGE_TYPE);
                 struct message* incoming = (struct message*)info.data;
-
-                fprintf(stderr, "received message: \"%.*s\" (%u bytes)\n", (int)incoming->length, incoming->data, incoming->length);
+                fprintf(stderr, "incoming message: %.*s (%u bytes)\n", (int)incoming->length, incoming->data, incoming->length);
 
                 struct message* outgoing = message_create();
-                memcpy(outgoing->data, incoming->data, incoming->length);
                 outgoing->length = incoming->length;
+                for (unsigned i = 0; i < outgoing->length; ++i) {
+                    outgoing->data[i] = toupper(incoming->data[i]);
+                }
+                fprintf(stderr, "outgoing message: %.*s (%u bytes)\n", (int)outgoing->length, outgoing->data, outgoing->length);
 
                 NBN_GameServer_SendReliableMessageTo(client, MESSAGE_TYPE, outgoing);
                 message_destroy(incoming);

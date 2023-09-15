@@ -55,20 +55,27 @@ func main() void {
                 assert info.sender == client;
                 assert info.type == message::TYPE;
                 var incoming = (:*message)info.data;
-
                 var data = incoming.*.data[0:(:usize)incoming.*.length];
                 std::print_format_line(
                     std::err(),
-                    "received message: \"{e}\" ({} bytes)",
+                    "incoming message: {} ({} bytes)",
                     (:[]std::formatter)[
                         std::formatter::init[[[]byte]](&data),
                         std::formatter::init[[uint]](&incoming.*.length)]);
 
                 var outgoing = message::create();
-                std::slice[[byte]]::copy(
-                    outgoing.*.data[0:(:usize)incoming.*.length],
-                    incoming.*.data[0:(:usize)incoming.*.length]);
                 outgoing.*.length = incoming.*.length;
+                for i in (:usize)outgoing.*.length {
+                    outgoing.*.data[i] = std::ascii::to_uppercase(incoming.*.data[i]);
+                }
+                var data = outgoing.*.data[0:(:usize)outgoing.*.length];
+                std::print_format_line(
+                    std::err(),
+                    "outgoing message: {} ({} bytes)",
+                    (:[]std::formatter)[
+                        std::formatter::init[[[]byte]](&data),
+                        std::formatter::init[[uint]](&outgoing.*.length)]);
+
                 NBN_GameServer_SendReliableMessageTo(client, message::TYPE, outgoing);
                 message::destroy(incoming);
             }

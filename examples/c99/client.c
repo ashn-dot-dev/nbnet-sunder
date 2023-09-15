@@ -70,7 +70,7 @@ main(int argc, char** argv)
                 NBN_MessageInfo info = NBN_GameClient_GetMessageInfo();
                 assert(info.type == MESSAGE_TYPE);
                 struct message *received = (struct message *)info.data;
-                fprintf(stderr, "received message: \"%.*s\" (%u bytes)\n", (int)received->length, received->data, received->length);
+                fprintf(stderr, "incoming message: %.*s (%u bytes)\n", (int)received->length, received->data, received->length);
                 message_destroy(received);
             }
         }
@@ -80,7 +80,8 @@ main(int argc, char** argv)
             unsigned int length = strlen(text);
             outgoing->length = length;
             memcpy(outgoing->data, text, length);
-            fprintf(stderr, "sending message: \"%.*s\" with length %u\n", (int)outgoing->length, outgoing->data, outgoing->length);
+            fprintf(stderr, "outgoing message: %.*s (%u bytes)\n", (int)outgoing->length, outgoing->data, outgoing->length);
+
             if (NBN_GameClient_SendReliableMessage(MESSAGE_TYPE, outgoing) < 0) {
                 fprintf(stderr, "error: failed to send message\n");
                 running = false;

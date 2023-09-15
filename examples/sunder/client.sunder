@@ -79,15 +79,15 @@ func main() void {
                 std::print_line(std::err(), "info: message received");
                 var info = NBN_GameClient_GetMessageInfo();
                 assert info.type == message::TYPE;
-                var received = (:*message)info.data;
-                var data = received.*.data[0:(:usize)received.*.length];
+                var incoming = (:*message)info.data;
+                var data = incoming.*.data[0:(:usize)incoming.*.length];
                 std::print_format_line(
                     std::err(),
-                    "received message: \"{e}\" ({} bytes)",
+                    "incoming message: {} ({} bytes)",
                     (:[]std::formatter)[
                         std::formatter::init[[[]byte]](&data),
-                        std::formatter::init[[uint]](&received.*.length)]);
-                message::destroy(received);
+                        std::formatter::init[[uint]](&incoming.*.length)]);
+                message::destroy(incoming);
             }
 
             ev = NBN_GameClient_Poll();
@@ -100,10 +100,11 @@ func main() void {
             var data = outgoing.*.data[0:(:usize)outgoing.*.length];
             std::print_format_line(
                 std::err(),
-                "sending message: \"{e}\" with length {}",
+                "outgoing message: {} ({} bytes)",
                 (:[]std::formatter)[
                     std::formatter::init[[[]byte]](&data),
                     std::formatter::init[[uint]](&outgoing.*.length)]);
+
             if NBN_GameClient_SendReliableMessage(message::TYPE, (:*any)outgoing) < 0 {
                 std::print_line(std::err(), "error: failed to send message");
                 running = false;
