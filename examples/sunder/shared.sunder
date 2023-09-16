@@ -2,22 +2,7 @@ import "c";
 import "nbnet";
 import "std";
 
-# TODO: These events are specified eith `#define`s or via anonymous enums.
-# Make sure that they are eventually parsed and added to nbnet.sunder.
-
-let NBN_NO_EVENT: sint = 0;
-let NBN_SKIP_EVENT: sint = 1;
-
-let NBN_CONNECTED: sint = 2;
-let NBN_DISCONNECTED: sint = 3;
-let NBN_MESSAGE_RECEIVED: sint = 4;
-
-let NBN_NEW_CONNECTION: sint = 2;
-let NBN_CLIENT_DISCONNECTED: sint = 3;
-let NBN_CLIENT_MESSAGE_RECEIVED: sint = 4;
-
 extern func usleep(usec: uint) sint;
-extern func NBN_Driver_Init() void;
 
 let NAME = startof("example");
 let ADDR = startof("127.0.0.1");

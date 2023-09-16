@@ -14,30 +14,19 @@ RE_TYPE_UXX = re.compile(r"unsigned (.+)")
 # Mapping of excplicit declarations/definitions.
 EXPLICIT = {
     "Word": "alias Word = u32;",
-}
 
-# Function pointer typedefs.
-FUNCTION_PTR_TYPEDEFS = {
-    "NBN_RPC_Func",
-    "NBN_ChannelBuilder",
-    "NBN_ChannelDestructor",
-    "NBN_MessageSerializer",
-    "NBN_MessageBuilder",
-    "NBN_MessageDestructor",
-    "NBN_Driver_StopFunc",
-    "NBN_Driver_RecvPacketsFunc",
-    "NBN_Driver_ClientStartFunc",
-    "NBN_Driver_ClientSendPacketFunc",
-    "NBN_Driver_ServerStartFunc",
-    "NBN_Driver_ServerSendPacketToFunc",
-    "NBN_Driver_ServerRemoveConnection",
-    "NBN_Stream_SerializeUInt",
-    "NBN_Stream_SerializeUInt64",
-    "NBN_Stream_SerializeInt",
-    "NBN_Stream_SerializeFloat",
-    "NBN_Stream_SerializeBool",
-    "NBN_Stream_SerializePadding",
-    "NBN_Stream_SerializeBytes",
+    "NBN_NO_EVENT": "let NBN_NO_EVENT: sint = 0;",
+    "NBN_SKIP_EVENT": "let NBN_SKIP_EVENT: sint = 1;",
+
+    "NBN_CONNECTED": "let NBN_CONNECTED: sint = 2;",
+    "NBN_DISCONNECTED": "let NBN_DISCONNECTED: sint = 3;",
+    "NBN_MESSAGE_RECEIVED": "let NBN_MESSAGE_RECEIVED: sint = 4;",
+
+    "NBN_NEW_CONNECTION": "let NBN_NEW_CONNECTION: sint = 2;",
+    "NBN_CLIENT_DISCONNECTED": "let NBN_CLIENT_DISCONNECTED: sint = 3;",
+    "NBN_CLIENT_MESSAGE_RECEIVED": "let NBN_CLIENT_MESSAGE_RECEIVED: sint = 4;",
+
+    "NBN_Driver_Init": "extern func NBN_Driver_Init() void;",
 }
 
 def identifier(s):
@@ -154,8 +143,6 @@ def generate_enum(node):
     return "\n".join(lines)
 
 def generate_node(node):
-    if node["name"] in EXPLICIT:
-        return EXPLICIT[node["name"]]
     if node["kind"] == "TypedefDecl":
         return generate_typedef(node)
     if node["kind"] == "FunctionDecl":
@@ -177,14 +164,17 @@ def main():
     ast = json.loads(subprocess.check_output(clang_ast_dump))
     assert ast["kind"] == "TranslationUnitDecl"
 
+    # Extract the list of AST nodes.
+    ast = [node for node in ast["inner"]]
+
     def ast_node_from_nbnet(node):
         return (
             node.get("name") is not None and
-            (node["name"].startswith("NBN") or node["name"] == "Word")
+            (node["name"].startswith("NBN") or node["name"] in EXPLICIT)
         )
 
     # Ignore builtin and included declarations/definitions.
-    ast = [node for node in ast["inner"] if ast_node_from_nbnet(node)]
+    ast = [node for node in ast if ast_node_from_nbnet(node)]
 
     def ast_node_is_forward_record_decl(node):
         return node["kind"] == "RecordDecl" and node.get("completeDefinition") is None
@@ -196,7 +186,7 @@ def main():
         return (
             node["kind"] == "TypedefDecl" and
             node["name"] not in EXPLICIT and
-            node["name"] not in FUNCTION_PTR_TYPEDEFS
+            not RE_TYPE_FUN.match(node["type"]["qualType"]) # function pointer
         )
 
     # ignore all unknown typedefs.
@@ -204,7 +194,11 @@ def main():
 
     print("import \"c\";")
     print("\n", end="")
+    for decl in EXPLICIT.values():
+        print(decl)
     for node in ast:
+        if node["name"] in EXPLICIT:
+            continue
         print(generate_node(node))
 
 if __name__ == "__main__":
