@@ -26,6 +26,10 @@ EXPLICIT = {
     "NBN_CLIENT_DISCONNECTED": "let NBN_CLIENT_DISCONNECTED: sint = 3;",
     "NBN_CLIENT_MESSAGE_RECEIVED": "let NBN_CLIENT_MESSAGE_RECEIVED: sint = 4;",
 
+    # nbnet.c
+    "NBN_LogType": "enum NBN_LogType { NBN_LOG_INFO; NBN_LOG_ERROR; NBN_LOG_DEBUG; NBN_LOG_TRACE; NBN_LOG_WARNING; }",
+    "NBN_Log_SetIsEnabled": "extern func NBN_Log_SetIsEnabled(type: NBN_LogType, enabled: bool) void;",
+    "NBN_Log_GetIsEnabled": "extern func NBN_Log_GetIsEnabled(type: NBN_LogType) bool;",
     "NBN_Driver_Init": "extern func NBN_Driver_Init() void;",
 }
 
