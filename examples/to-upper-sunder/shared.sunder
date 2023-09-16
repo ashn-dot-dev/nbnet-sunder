@@ -4,7 +4,7 @@ import "std";
 
 extern func usleep(usec: uint) sint;
 
-let NAME = startof("example");
+let NAME = startof("to-upper");
 let ADDR = startof("127.0.0.1");
 let PORT = 31415u16;
 let TICK_RATE = 2u; # ticks per second

@@ -20,7 +20,7 @@ void NBN_Log(NBN_LogType type, const char *fmt, ...);
 
 void NBN_Driver_Init(void);
 
-#define NAME "example"
+#define NAME "to-upper"
 #define ADDR "127.0.0.1"
 #define PORT 31415
 #define TICK_RATE 2 // ticks per second
