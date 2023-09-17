@@ -29,7 +29,7 @@ struct rect {
     }
 }
 
-func update(state: *world_state, client_1_message: client_message, client_2_message: client_message) void {
+func update(state: *server_state, client_1_message: client_message, client_2_message: client_message) void {
     state.*.p1_paddle_y = state.*.p1_paddle_y + (:f32)client_1_message.direction * PADDLE_SPEED;
     if state.*.p1_paddle_y < 0.0 {
         state.*.p1_paddle_y = 0.0;
@@ -67,7 +67,7 @@ func update(state: *world_state, client_1_message: client_message, client_2_mess
     var rebound = f32::degrees_to_radians(30.0f32);
 
     var p1_rect = (:rect){
-        .x = (:f32)P1_PADDLE_X,
+        .x = state.*.p1_paddle_x,
         .y = state.*.p1_paddle_y,
         .w = (:f32)PADDLE_W,
         .h = (:f32)PADDLE_H,
@@ -81,7 +81,7 @@ func update(state: *world_state, client_1_message: client_message, client_2_mess
     }
 
     var p2_rect = (:rect){
-        .x = (:f32)P2_PADDLE_X,
+        .x = state.*.p2_paddle_x,
         .y = state.*.p2_paddle_y,
         .w = (:f32)PADDLE_W,
         .h = (:f32)PADDLE_H,
@@ -137,7 +137,7 @@ func main() void {
     defer NBN_GameServer_Stop();
 
     let DT: double = 1.0 / (:double)TICK_RATE;
-    var state = world_state::INIT;
+    var state = server_state::INIT;
     var client_1 = std::ptr[[NBN_Connection]]::NULL;
     var client_2 = std::ptr[[NBN_Connection]]::NULL;
     var client_1_message: client_message = uninit; # most recent

@@ -5,19 +5,19 @@ import "std";
 
 import "shared.sunder";
 
-func render(state: world_state, player: uint) void {
+func render(state: client_state) void {
     BeginDrawing();
     ClearBackground(BLACK);
 
     DrawRectangle(
-        P1_PADDLE_X,
+        (:sint)state.p1_paddle_x,
         (:sint)state.p1_paddle_y,
         PADDLE_W,
         PADDLE_H,
         WHITE,
     );
     DrawRectangle(
-        P2_PADDLE_X,
+        (:sint)state.p2_paddle_x,
         (:sint)state.p2_paddle_y,
         PADDLE_W,
         PADDLE_H,
@@ -61,7 +61,7 @@ func render(state: world_state, player: uint) void {
     );
 
     let PRESS_SPACE_OFFSET_Y = 15.0f32;
-    if state.server == player {
+    if state.server == state.player {
         let FONT_SIZE: sint = 48;
         let TEXT = startof("PRESS SPACE");
         var size = MeasureTextEx(GetFontDefault(), TEXT, (:f32)FONT_SIZE, 1.0f32);
@@ -103,7 +103,6 @@ func main() void {
         (:[]std::formatter)[
             std::formatter::init[[[]byte]](&ipaddr)]);
 
-
     NBN_Driver_Init();
     NBN_GameClient_Init(NAME, startof(ipaddr), PORT, false, std::ptr[[uint8_t]]::NULL);
     NBN_GameClient_RegisterMessage(
@@ -127,8 +126,7 @@ func main() void {
     defer CloseWindow();
     SetTargetFPS((:sint)TICK_RATE);
 
-    var state = world_state::INIT;
-    var player = (:uint)0;
+    var state = client_state::INIT;
     var running = true;
     var connected = false;
     for not WindowShouldClose() and running {
@@ -181,8 +179,16 @@ func main() void {
                 var info = NBN_GameClient_GetMessageInfo();
                 assert info.type == server_message::TYPE;
                 var incoming = (:*::server_message)info.data;
-                state.update_from_server_message(*incoming);
-                player = incoming.*.player;
+
+                state.p1_paddle_y = incoming.*.p1_paddle_y;
+                state.p2_paddle_y = incoming.*.p2_paddle_y;
+                state.ball_x = incoming.*.ball_x;
+                state.ball_y = incoming.*.ball_y;
+                state.p1_score = incoming.*.p1_score;
+                state.p2_score = incoming.*.p2_score;
+                state.server = incoming.*.server;
+                state.player = incoming.*.player;
+
                 server_message::destroy(incoming);
             }
         }
@@ -204,6 +210,6 @@ func main() void {
             break;
         }
 
-        render(state, player);
+        render(state);
     }
 }
