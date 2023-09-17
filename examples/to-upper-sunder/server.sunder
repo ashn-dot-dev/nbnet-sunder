@@ -33,7 +33,7 @@ func main() void {
 
             if ev == NBN_NEW_CONNECTION {
                 std::print_line(std::err(), "info: new connection");
-                if (client != std::ptr[[NBN_Connection]]::NULL) {
+                if client != std::ptr[[NBN_Connection]]::NULL {
                     NBN_GameServer_RejectIncomingConnectionWithCode(BUSY_CODE);
                 }
                 else {
