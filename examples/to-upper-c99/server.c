@@ -11,7 +11,10 @@ int
 main(void)
 {
     NBN_Driver_Init();
-    NBN_GameServer_Init(NAME, PORT, false);
+    if (NBN_GameServer_StartEx(NAME, PORT, false) < 0) {
+        fprintf(stderr, "error: failed to start the server\n");
+        exit(EXIT_FAILURE);
+    }
 
     NBN_GameServer_RegisterMessage(
         MESSAGE_TYPE,
@@ -19,16 +22,9 @@ main(void)
         (NBN_MessageDestructor)message_destroy,
         (NBN_MessageSerializer)message_serialize);
 
-    if (NBN_GameServer_Start() < 0) {
-        fprintf(stderr, "error: failed to start the server\n");
-        exit(EXIT_FAILURE);
-    }
-
     double dt = 1.0 / TICK_RATE;
-    NBN_Connection* client = NULL;
+    NBN_ConnectionHandle client = 0;
     while (true) {
-        NBN_GameServer_AddTime(dt);
-
         int ev = -1;
         while ((ev = NBN_GameServer_Poll()) != NBN_NO_EVENT) {
             if (ev < 0) {
@@ -38,7 +34,7 @@ main(void)
 
             if (ev == NBN_NEW_CONNECTION) {
                 fprintf(stderr, "info: new connection\n");
-                if (client != NULL) {
+                if (client != 0) {
                     NBN_GameServer_RejectIncomingConnectionWithCode(BUSY_CODE);
                 }
                 else {
@@ -49,8 +45,8 @@ main(void)
 
             if (ev == NBN_CLIENT_DISCONNECTED) {
                 fprintf(stderr, "info: disconnected\n");
-                assert(NBN_GameServer_GetDisconnectedClient()->id == client->id);
-                client = NULL;
+                assert(NBN_GameServer_GetDisconnectedClient() == client);
+                client = 0;
             }
 
             if (ev == NBN_CLIENT_MESSAGE_RECEIVED) {

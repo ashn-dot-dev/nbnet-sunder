@@ -18,8 +18,10 @@ $(NBNET_REPODIR):
 nbnet.sunder: $(NBNET_REPODIR) generate.py
 	python3 generate.py $(NBNET_REPODIR)/nbnet.h >nbnet.sunder
 
+# The define of _XOPEN_SOURCE with a value of 700 used to bring in the POSIX
+# 2008 definition of `struct timespec` and related functionality.
 libnbnet.a: $(NBNET_REPODIR) nbnet.c
-	$(CC) $(CFLAGS) -o nbnet.o -c -I $(NBNET_REPODIR) nbnet.c
+	$(CC) $(CFLAGS) -D_XOPEN_SOURCE=700 -o nbnet.o -c -I $(NBNET_REPODIR) nbnet.c
 	ar -rcs $@ nbnet.o
 
 install: nbnet.sunder libnbnet.a

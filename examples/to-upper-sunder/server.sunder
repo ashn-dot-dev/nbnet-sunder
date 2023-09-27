@@ -6,7 +6,10 @@ import "shared.sunder";
 
 func main() void {
     NBN_Driver_Init();
-    NBN_GameServer_Init(NAME, PORT, false);
+    if NBN_GameServer_StartEx(NAME, PORT, false) < 0 {
+        std::print_line(std::err(), "error: failed to start the server");
+        std::exit(std::EXIT_FAILURE);
+    }
 
     NBN_GameServer_RegisterMessage(
         message::TYPE,
@@ -14,16 +17,9 @@ func main() void {
         (:NBN_MessageDestructor)message::destroy,
         (:NBN_MessageSerializer)message::serialize);
 
-    if NBN_GameServer_Start() < 0 {
-        std::print_line(std::err(), "error: failed to start the server");
-        std::exit(std::EXIT_FAILURE);
-    }
-
     let dt: double = 1.0 / (:double)TICK_RATE;
-    var client = std::ptr[[NBN_Connection]]::NULL;
+    var client = (:NBN_ConnectionHandle)0;
     for true {
-        NBN_GameServer_AddTime(dt);
-
         var ev: sint = NBN_GameServer_Poll();
         for ev != NBN_NO_EVENT {
             if ev < 0 {
@@ -33,7 +29,7 @@ func main() void {
 
             if ev == NBN_NEW_CONNECTION {
                 std::print_line(std::err(), "info: new connection");
-                if client != std::ptr[[NBN_Connection]]::NULL {
+                if client != 0 {
                     NBN_GameServer_RejectIncomingConnectionWithCode(BUSY_CODE);
                 }
                 else {
@@ -44,8 +40,8 @@ func main() void {
 
             if ev == NBN_CLIENT_DISCONNECTED {
                 std::print_line(std::err(), "info: disconnected");
-                assert NBN_GameServer_GetDisconnectedClient().*.id == client.*.id;
-                client = std::ptr[[NBN_Connection]]::NULL;
+                assert NBN_GameServer_GetDisconnectedClient() == client;
+                client = 0;
             }
 
             if ev == NBN_CLIENT_MESSAGE_RECEIVED {

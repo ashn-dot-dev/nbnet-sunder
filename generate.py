@@ -15,6 +15,10 @@ RE_TYPE_UXX = re.compile(r"unsigned (.+)")
 EXPLICIT = {
     "Word": "alias Word = u32;",
 
+    "NBN_ERROR": "let NBN_ERROR: sint = -1;",
+
+    "NBN_ConnectionHandle": "alias NBN_ConnectionHandle = uint32_t;",
+
     "NBN_NO_EVENT": "let NBN_NO_EVENT: sint = 0;",
     "NBN_SKIP_EVENT": "let NBN_SKIP_EVENT: sint = 1;",
 

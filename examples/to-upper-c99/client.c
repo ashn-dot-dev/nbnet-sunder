@@ -21,9 +21,10 @@ main(int argc, char** argv)
     }
 
     NBN_Driver_Init();
-    // TODO: Calling NBN_GameClient_Init with `encryption == true` (sometimes)
-    // segfaults, and generally seems to be causing some memory corruption.
-    NBN_GameClient_Init(NAME, ADDR, PORT, false, NULL);
+    if (NBN_GameClient_StartEx(NAME, ADDR, PORT, false, NULL, 0) < 0) {
+        fprintf(stderr, "error: failed to start client\n");
+        exit(EXIT_FAILURE);
+    }
 
     NBN_GameClient_RegisterMessage(
         MESSAGE_TYPE,
@@ -31,17 +32,10 @@ main(int argc, char** argv)
         (NBN_MessageDestructor)message_destroy,
         (NBN_MessageSerializer)message_serialize);
 
-    if (NBN_GameClient_Start() < 0) {
-        fprintf(stderr, "error: failed to start client\n");
-        exit(EXIT_FAILURE);
-    }
-
     double dt = 1.0 / TICK_RATE;
     bool connected = false;
     bool running = true;
     while (running) {
-        NBN_GameClient_AddTime(dt);
-
         int ev = -1;
         while ((ev = NBN_GameClient_Poll()) != NBN_NO_EVENT) {
             if (ev < 0) {

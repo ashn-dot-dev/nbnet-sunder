@@ -31,9 +31,10 @@ func main() void {
     }
 
     NBN_Driver_Init();
-    # TODO: Calling NBN_GameClient_Init with `encryption == true` (sometimes)
-    # segfaults, and generally seems to be causing some memory corruption.
-    NBN_GameClient_Init(NAME, ADDR, PORT, false, std::ptr[[uint8_t]]::NULL);
+    if NBN_GameClient_StartEx(NAME, ADDR, PORT, false, std::ptr[[uint8_t]]::NULL, 0) < 0 {
+        std::print_line(std::err(), "error: failed to start client");
+        std::exit(std::EXIT_FAILURE);
+    }
 
     NBN_GameClient_RegisterMessage(
         message::TYPE,
@@ -41,17 +42,10 @@ func main() void {
         (:NBN_MessageDestructor)message::destroy,
         (:NBN_MessageSerializer)message::serialize);
 
-    if NBN_GameClient_Start() < 0 {
-        std::print_line(std::err(), "error: failed to start client");
-        std::exit(std::EXIT_FAILURE);
-    }
-
     let dt: double = 1.0 / (:double)TICK_RATE;
     var connected = false;
     var running = true;
     for running {
-        NBN_GameClient_AddTime(dt);
-
         var ev: sint = NBN_GameClient_Poll();
         for ev != NBN_NO_EVENT {
             if ev < 0 {

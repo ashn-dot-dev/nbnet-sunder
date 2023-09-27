@@ -104,7 +104,12 @@ func main() void {
             std::formatter::init[[[]byte]](&ipaddr)]);
 
     NBN_Driver_Init();
-    NBN_GameClient_Init(NAME, startof(ipaddr), PORT, false, std::ptr[[uint8_t]]::NULL);
+    if NBN_GameClient_StartEx(NAME, startof(ipaddr), PORT, false, std::ptr[[uint8_t]]::NULL, 0) < 0 {
+        std::print_line(std::err(), "error: failed to start client");
+        std::exit(std::EXIT_FAILURE);
+    }
+    defer NBN_GameClient_Stop();
+
     NBN_GameClient_RegisterMessage(
         client_message::TYPE,
         (:NBN_MessageBuilder)client_message::create,
@@ -116,11 +121,6 @@ func main() void {
         (:NBN_MessageDestructor)server_message::destroy,
         (:NBN_MessageSerializer)server_message::serialize);
 
-    if NBN_GameClient_Start() < 0 {
-        std::print_line(std::err(), "error: failed to start client");
-        std::exit(std::EXIT_FAILURE);
-    }
-    defer NBN_GameClient_Stop();
 
     InitWindow(WINDOW_W, WINDOW_H, startof("Pong"));
     defer CloseWindow();
@@ -145,7 +145,6 @@ func main() void {
             actions.is_served = true;
         }
 
-        NBN_GameClient_AddTime((:double)GetFrameTime());
         for true {
             var ev = NBN_GameClient_Poll();
 
