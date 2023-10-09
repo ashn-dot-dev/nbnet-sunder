@@ -38,5 +38,5 @@ clean:
 		nbnet.sunder \
 		nbnet.o \
 		libnbnet.a \
-		$$(find -name client) \
-		$$(find -name server)
+		$$(find . -name client) \
+		$$(find . -name server)
