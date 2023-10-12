@@ -20,7 +20,11 @@ void NBN_Log(NBN_LogType type, const char *fmt, ...);
 
 #define NBNET_IMPL
 #include <nbnet.h>
+#ifdef __EMSCRIPTEN__
+#include <net_drivers/webrtc.h>
+#else
 #include <net_drivers/udp.h>
+#endif
 
 void NBN_Log_SetIsEnabled(NBN_LogType type, bool enabled);
 bool NBN_Log_GetIsEnabled(NBN_LogType type);
@@ -77,5 +81,9 @@ void NBN_Log(NBN_LogType type, const char *fmt, ...)
 
 void NBN_Driver_Init(void)
 {
+#ifdef __EMSCRIPTEN__
+    NBN_WebRTC_Register();
+#else
     NBN_UDP_Register();
+#endif
 }

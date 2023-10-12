@@ -1,0 +1,9 @@
+TODO
+====
+
+Compiling with:
+
+    rm -rf nbnet && git clean -dxfx && make install NBNET_REPODIR=~/sources/nbnet && (cd examples/pong/ && npm install) && (cd examples/pong/ && sh build-web.sh) && (cd examples/pong/ && node server.js)
+
+Fallback native build will fail with `failed to find python` error when using
+`@koush/wrtc` instead of `wrtc` as a nbnet dependency.

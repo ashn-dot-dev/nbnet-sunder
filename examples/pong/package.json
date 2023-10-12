@@ -1,0 +1,5 @@
+{
+    "dependencies": {
+        "nbnet": "file:../../../nbnet/net_drivers/webrtc"
+    }
+}

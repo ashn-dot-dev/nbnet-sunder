@@ -93,8 +93,8 @@ func main() void {
     }
 
     if ipaddr.is_empty() {
-        usage();
-        std::exit(std::EXIT_FAILURE);
+        std::print_line(std::err(), "info: using default IP address 127.0.0.1");
+        ipaddr = std::optional[[[]byte]]::init_value("127.0.0.1");
     }
     var ipaddr = ipaddr.value();
     std::print_format_line(

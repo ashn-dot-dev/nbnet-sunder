@@ -2,4 +2,7 @@ nbnet/
 nbnet.o
 nbnet.sunder
 libnbnet.a
+libnbnet-web.a
+nbnet-bundle.js
 *.tmp.*
+*.wasm

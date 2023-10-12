@@ -1,2 +1,7 @@
 client
 server
+client.html
+server.js
+
+node_modules/
+package-lock.json
