@@ -121,7 +121,6 @@ func main() void {
         (:NBN_MessageDestructor)server_message::destroy,
         (:NBN_MessageSerializer)server_message::serialize);
 
-
     InitWindow(WINDOW_W, WINDOW_H, startof("Pong"));
     defer CloseWindow();
     SetTargetFPS((:sint)TICK_RATE);
