@@ -17,6 +17,9 @@ EXPLICIT = {
 
     "NBN_ERROR": "let NBN_ERROR: sint = -1;",
 
+    "NBN_MAX_MESSAGE_TYPES": "let NBN_MAX_MESSAGE_TYPES: u8 = 255;",
+    "NBN_BYTE_ARRAY_MESSAGE_TYPE":  "let NBN_BYTE_ARRAY_MESSAGE_TYPE: u8 = NBN_MAX_MESSAGE_TYPES - 4;",
+
     "NBN_ConnectionHandle": "alias NBN_ConnectionHandle = uint32_t;",
 
     "NBN_NO_EVENT": "let NBN_NO_EVENT: sint = 0;",
