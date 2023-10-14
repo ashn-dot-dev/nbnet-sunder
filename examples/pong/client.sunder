@@ -196,7 +196,7 @@ func main() void {
             var outgoing = client_message::create();
             *outgoing = actions;
 
-            if NBN_GameClient_SendReliableMessage(client_message::TYPE, (:*any)outgoing) < 0 {
+            if NBN_GameClient_SendReliableMessage(client_message::TYPE, outgoing) < 0 {
                 std::print_line(std::err(), "error: failed to send message");
                 running = false;
                 break;
