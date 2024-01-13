@@ -13,14 +13,14 @@ RE_TYPE_UXX = re.compile(r"unsigned (.+)")
 
 # Mapping of excplicit declarations/definitions.
 EXPLICIT = {
-    "Word": "alias Word = u32;",
+    "Word": "type Word = u32;",
 
     "NBN_ERROR": "let NBN_ERROR: sint = -1;",
 
     "NBN_MAX_MESSAGE_TYPES": "let NBN_MAX_MESSAGE_TYPES: u8 = 255;",
     "NBN_BYTE_ARRAY_MESSAGE_TYPE":  "let NBN_BYTE_ARRAY_MESSAGE_TYPE: u8 = NBN_MAX_MESSAGE_TYPES - 4;",
 
-    "NBN_ConnectionHandle": "alias NBN_ConnectionHandle = uint32_t;",
+    "NBN_ConnectionHandle": "type NBN_ConnectionHandle = uint32_t;",
 
     "NBN_NO_EVENT": "let NBN_NO_EVENT: sint = 0;",
     "NBN_SKIP_EVENT": "let NBN_SKIP_EVENT: sint = 1;",
@@ -35,15 +35,15 @@ EXPLICIT = {
 
     # nbnet.c
     "NBN_LogType": "enum NBN_LogType { NBN_LOG_INFO; NBN_LOG_ERROR; NBN_LOG_DEBUG; NBN_LOG_TRACE; NBN_LOG_WARNING; }",
-    "NBN_Log_SetIsEnabled": "extern func NBN_Log_SetIsEnabled(type: NBN_LogType, enabled: bool) void;",
-    "NBN_Log_GetIsEnabled": "extern func NBN_Log_GetIsEnabled(type: NBN_LogType) bool;",
+    "NBN_Log_SetIsEnabled": "extern func NBN_Log_SetIsEnabled(type_: NBN_LogType, enabled: bool) void;",
+    "NBN_Log_GetIsEnabled": "extern func NBN_Log_GetIsEnabled(type_: NBN_LogType) bool;",
     "NBN_Driver_Init": "extern func NBN_Driver_Init() void;",
 }
 
 def identifier(s):
     # Set of Sunder keywords to be substituted.
     # Updated as necessary.
-    KEYWORDS = {"func"}
+    KEYWORDS = {"func", "type"}
     # Substitute `<identifier>` for `<identifier>_` if the identifier would be
     # a reserved keyword.
     return f"{s}_" if s in KEYWORDS else s
@@ -99,7 +99,7 @@ def generate_typedef(node):
     if not match:
         raise Exception(f"failed to match function typedef with type `{node['type']['qualType']}`")
     type = generate_type_function_pointer(node["type"]["qualType"])
-    return f"alias {node['name']} = {type};"
+    return f"type {node['name']} = {type};"
 
 def generate_function(node):
     assert node["kind"] == "FunctionDecl"
