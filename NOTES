@@ -1,0 +1,5 @@
+I am currently keeping my libdatachannel install in /tmp/libdatachannel while testing.
+I am currently keeping my nbnet repository in ~/sources/nbnet.
+In the nbnet-sunder repository I am testing changes with:
+
+    make clean install install-web NBNET_REPODIR=~/sources/nbnet CFLAGS="-DNBN_WEBRTC_NATIVE -I /tmp/libdatachannel/include" && (cd examples/pong && sh build-webrtc-native.sh /tmp/libdatachannel && sh build-webrtc-web.sh ~/sources/nbnet)

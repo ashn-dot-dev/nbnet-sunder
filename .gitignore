@@ -1,5 +1,10 @@
 nbnet/
-nbnet.o
 nbnet.sunder
+nbnet.o
 libnbnet.a
+nbnet-web.o
+libnbnet-web.a
+package.json
+package-lock.json
+node_modules/
 *.tmp.*

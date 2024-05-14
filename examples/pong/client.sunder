@@ -92,9 +92,12 @@ func main() void {
         ipaddr = std::optional[[[]byte]]::init_value(argparser.argument_value());
     }
 
+    #if ipaddr.is_empty() {
+    #    usage();
+    #    std::exit(std::EXIT_FAILURE);
+    #}
     if ipaddr.is_empty() {
-        usage();
-        std::exit(std::EXIT_FAILURE);
+        ipaddr = std::optional[[[]byte]]::init_value("127.0.0.1");
     }
     var ipaddr = ipaddr.value();
     std::print_format_line(
