@@ -91,7 +91,7 @@ void NBN_Driver_Init(void)
     bool enable_tls = false;
 #endif
     NBN_WebRTC_Config cfg = {
-        .enable_tls = true,
+        .enable_tls = enable_tls,
         .cert_path = NULL,
         .key_path = NULL,
     };
